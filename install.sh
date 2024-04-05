@@ -1,7 +1,7 @@
-conda create -n pytorch python=3.10
+conda create -n pytorch python=3.10 -y
 conda activate pytorch
-conda install pytorch torchvision torchaudio cpuonly -c pytorch
-conda install ipykernel
-conda install -c anaconda seaborn
-conda install scikit-learn
-conda install -c conda-forge detecto
+conda install pytorch torchvision torchaudio cpuonly -c pytorch -y
+conda install ipykernel -y
+conda install -c anaconda seaborn -y
+conda install scikit-learn -y
+conda install -c conda-forge detecto -y
