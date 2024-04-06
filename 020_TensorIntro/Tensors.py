@@ -27,6 +27,7 @@ x_range
 y_range = [y_function(i) for i in x_range]
 sns.lineplot(x = x_range, y = y_range)
 
+
 # %% define y as function of x
 y = (x-3) * (x-6) * (x-4)
 print(y)
