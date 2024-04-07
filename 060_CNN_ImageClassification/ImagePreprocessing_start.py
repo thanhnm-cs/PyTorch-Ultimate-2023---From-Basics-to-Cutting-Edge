@@ -9,3 +9,15 @@ img = Image.open('kiki.jpg')
 img
 
 # %% compose a series of steps
+preprocess_steps = transforms.Compose([
+    transforms.Resize((300,300)),  # better (300, 300)
+    transforms.RandomRotation(50),
+    transforms.CenterCrop(200),
+    transforms.Grayscale(),
+    transforms.RandomVerticalFlip(),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5], std=[0.5]),  # ImageNet values
+])
+
+x = preprocess_steps(img)
+x
