@@ -48,49 +48,58 @@ optimizer = torch.optim.SGD(model.parameters(), lr=LR)
 # %%
 losses, slope, bias = [], [], []
 NUM_EPOCHS = 1000
+BATCH_SIZE = 2
+
+
 for epoch in range(NUM_EPOCHS):
-    # set gradients to zero
-    optimizer.zero_grad()
+    for i in range(0, len(X), BATCH_SIZE):
+        batch_X = X[i : i + BATCH_SIZE]
+        batch_y = y_true[i : i + BATCH_SIZE]
+        # set gradients to zero
+        optimizer.zero_grad()
 
-    # forward pass
-    y_pred = model(X)
+        # forward pass
+        batch_y_pred = model(batch_X)
 
-    # compute loss
-    loss = loss_fun(y_pred, y_true)
+        # compute loss
+        loss = loss_fun(batch_y_pred, batch_y)
 
-    # backward pass
-    loss.backward()
+        # backward pass
+        loss.backward()
 
-    # update weights
-    optimizer.step()
+        # update weights
+        optimizer.step()
 
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            if name == "linear.weight":
-                slope.append(param.data.numpy()[0][0])
-            if name == "linear.bias":
-                bias.append(param.data.numpy()[0])
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                if name == "linear.weight":
+                    slope.append(param.data.numpy()[0][0])
+                if name == "linear.bias":
+                    bias.append(param.data.numpy()[0])
 
-    # store loss
-    losses.append(loss.item())
+        # store loss
+        losses.append(loss.item())
 
-    if epoch % 100 == 0:
-        print("Epoch: {}, Loss: {}".format(epoch, loss.data))
-# %%
-
-sns.scatterplot(x=range(NUM_EPOCHS), y=losses)
-
-
-sns.scatterplot(x=range(NUM_EPOCHS), y=bias)
-
-
-sns.scatterplot(x=range(NUM_EPOCHS), y=slope)
+        if epoch % 100 == 0:
+            print("Epoch: {}, Loss: {}".format(epoch, loss.data))
+            print("batch: ", i)
 
 
 # %%
-y_pred = model(X).data.numpy().reshape(-1)
+
+sns.scatterplot(x=range(len(losses)), y=losses)
+
+
+sns.scatterplot(x=range(len(bias)), y=bias)
+
+
+sns.scatterplot(x=range(len(slope)), y=slope)
+
+
+# %%
+batch_y_pred = model(X).data.numpy().reshape(-1)
 sns.scatterplot(x=X_list, y=y_list)
-sns.scatterplot(x=X_list, y=y_pred, color="red")
+sns.scatterplot(x=X_list, y=batch_y_pred, color="red")
 
 # %%
 # sns.scatterplot(x=range(NUM_EPOCHS),y=losses)
